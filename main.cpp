@@ -43,8 +43,6 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
   int tile_y = tile_coords[1];
   int tile_z = tile_coords[2];
 
-  std::cout << tile_x << ", " << tile_y << ", " << tile_z << "," << tile_idx << "\n";
-
   //counter of the bombs detected
   int bomb_count = 0;
   
@@ -72,21 +70,15 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
   if (tile_z == 0) {z_start_benchmark = 0;}
   if (tile_z == depth - 1) {z_end == 0;}
 
-  std::cout << "\t" << x_start_benchmark << ", " << x_end << " : " << y_start_benchmark << ", " << y_end << " : " << z_start_benchmark << ", " << z_end << " \n"; 
-
   //searches each tile in 3x3x3 radius, cutting off out-of-bounds tiles using start and end variables
   for (z_start = z_start_benchmark; z_start <= z_end; z_start++)
   {
-    std::cout <<  "\tZ START: " << z_start << "\n";
     for (x_start = x_start_benchmark; x_start <= x_end; x_start++)
     {
-      std::cout << "\t X START: " << x_start << "\n";
       for (y_start = y_start_benchmark; y_start <= y_end; y_start++)
       {
-        std::cout << "\t  Y START: " << y_start << "\n";
         if (x_start != 0 || y_start != 0 || z_start != 0) //prevents the check from checking its own tile, not neccisary
         {
-          std::cout <<  "\t" << "      TRANSLATIONS: " << x_start << ", " << y_start << ", " << z_start << "\n";
           //idx is the idx of what the tile is (either bomb which is -1 or the number of bombs nearby (the number that is dicolonistsplayed when uncovered))
           int idx = tile_idx + 3;
 
@@ -95,12 +87,9 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
           idx += y_start * height * 5; //y translation
           idx += x_start * 5; //x translation
 
-          std::cout << "\t" << "      IDX: " << idx << "\n";
-
           //if the tile is a bomb add it to the bomb counter
           if (tile_list[idx] == -1)
           {
-            std::cout << "\t" << "      IS BOMB\n";
             bomb_count++;
           }
         }
@@ -183,11 +172,6 @@ std::vector<int> fill_board()
     {
       return_tiles[i + 3] = surrounding_bombs(return_tiles, std::vector<int> {return_tiles.begin() + i, return_tiles.begin() + i + 3}, i);
     }
-  }
-
-  for (int i = 0; i < return_tiles.size(); i += 5)
-  {
-    std::cout << "[" << return_tiles[i] << ", " << return_tiles[i + 1] << ", " << return_tiles[i + 2] << ", " << return_tiles[i + 3] << ", " << return_tiles[i + 4] << "]" << i/4 << "\n";
   }
 
   return return_tiles;
