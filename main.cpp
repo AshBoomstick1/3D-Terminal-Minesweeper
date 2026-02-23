@@ -67,10 +67,10 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
   if (tile_x == width - 1) {x_end == 0;} //if the tile is on the right wall, dont search past the right wall
 
   if (tile_y == 0) {y_start_benchmark = 0;}
-  if (tile_y == width - 1) {y_end == 0;}
+  if (tile_y == height - 1) {y_end == 0;}
 
   if (tile_z == 0) {z_start_benchmark = 0;}
-  if (tile_z == width - 1) {z_end == 0;}
+  if (tile_z == depth - 1) {z_end == 0;}
 
   std::cout << "\t" << x_start_benchmark << ", " << x_end << " : " << y_start_benchmark << ", " << y_end << " : " << z_start_benchmark << ", " << z_end << " \n"; 
 
