@@ -62,13 +62,13 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
 
   //finds if the tile is on an edge and cuts off the search by setting the end and start variables accordingly
   if (tile_x == 0) {x_start_benchmark = 0;}             //if the tile is on the left wall, dont search past the left wall
-  if (tile_x == width - 1) {x_end == 0;} //if the tile is on the right wall, dont search past the right wall
+  if (tile_x == width - 1) {x_end = 0;} //if the tile is on the right wall, dont search past the right wall
 
   if (tile_y == 0) {y_start_benchmark = 0;}
-  if (tile_y == height - 1) {y_end == 0;}
+  if (tile_y == height - 1) {y_end = 0;}
 
   if (tile_z == 0) {z_start_benchmark = 0;}
-  if (tile_z == depth - 1) {z_end == 0;}
+  if (tile_z == depth - 1) {z_end = 0;}
 
   //searches each tile in 3x3x3 radius, cutting off out-of-bounds tiles using start and end variables
   for (z_start = z_start_benchmark; z_start <= z_end; z_start++)
@@ -135,7 +135,6 @@ std::vector<int> fill_board()
     available_tiles.erase(available_tiles.begin() + rand_idx, available_tiles.begin() + rand_idx + 2);
   }
 
-
   //adds the bombs from bomb list to a final list of tiles to return
   std::vector<int> return_tiles = {};
   for (int z = 0; z < depth; z++)
@@ -179,10 +178,45 @@ std::vector<int> fill_board()
 
 void print_board()
 {
+  const std::string covered_color = "\x1B[48:5:8m";
+  const std::string uncovered_color = "\x1B[48:5:7m";
+  const std::string flag_color = "\x1B[48:5:12m";
+  const std::string bomb_color = "\x1B[48:5:9m";
+  const std::string border_color = "\x1B[48:5:20m";
+  const std::string end_color = "\x1B[0m";
+
+
+  std::cout << "\n\n\t3D MINESWEEPER\n\n";
+
   for (int z = 0; z < depth; z++)
   {
+    std::cout << "\tLayer: " << z + 1 << "\n\t";
+    std::cout << border_color << "  " << end_color;
+    for (int i = 0; i < width; i++)
+    {
+      if (i < 9)
+      {
+        std::cout << border_color << i + 1 << " " << end_color;
+      }
+      else
+      {
+        std::cout << border_color << i + 1 << end_color;
+      }
+    }
+
+    std::cout << "\n";
     for (int y = 0; y < height; y++)
     {
+      std::cout << "\t";
+      if (y < 9)
+      {
+        std::cout << border_color <<  y + 1 << " " << end_color;
+      }
+      else
+      {
+        std::cout << border_color << y + 1 << end_color;
+      }
+
       for (int x = 0; x < width; x++)
       {
         int idx = z * width * height * 5 + y * height * 5 + x * 5 + 3;
