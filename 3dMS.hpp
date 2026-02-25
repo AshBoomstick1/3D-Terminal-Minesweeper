@@ -30,5 +30,8 @@ extern std::vector<int> tile_list;
 //function declarations
 bool search_list(const std::vector<int> list, const std::vector<int> item);
 int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> tile_coords, const int tile_idx);
+int format_input(const std::string question, std::string input, const std::vector<int> acceptable_inputs, const bool first_test);
+char format_input(const std::string question, std::string input, const std::vector<char> acceptable_inputs, const bool first_test);
+bool won();
 
 #endif

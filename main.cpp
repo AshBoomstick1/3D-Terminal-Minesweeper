@@ -9,6 +9,68 @@ const int depth =  3;
 
 std::vector<int> tile_list = {}; //list of all the tiles
 
+int format_input(const std::string question, std::string input, const std::vector<int> acceptable_inputs, const bool first_test)
+//takes the players input an ensures it is acceptable for the program
+{
+  if (input == "exit")
+  {
+    abort();
+  }
+
+  if (first_test == false)
+  {
+    std::cout << question;
+    std::cin >> input;
+    std::cout << "x1B[2A";
+  }
+  std::cout << "x1B[1A";
+
+  try 
+  {
+    std::stoi(input);
+  }
+  catch (std::invalid_argument &e)
+  {
+    std::cout << "Input contained a non-integer charactar.\n";
+    format_input(question, input, acceptable_inputs, false);
+  }
+
+  const int int_input = stoi(input);
+  if (int_input < 1 || int_input > width)
+  {
+    std::cout << "Input falls outside the accepted range of integers.\n";
+    format_input(question, input, acceptable_inputs, false);
+  }
+
+  return int_input;
+}
+
+char format_input(const std::string question, std::string input, const std::vector<char> acceptable_inputs, const bool first_test)
+{
+
+}
+
+bool won()
+//return true or false depending on wether the player has won or not
+{
+  for (int i = 4; i < tile_list.size(); i += 5)
+  {
+    if (tile_list[i] == 0)
+    {
+      return false;
+    }
+    else if (tile_list[i] == 2)
+    {
+      if (tile_list[i - 1] > -1)
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 bool search_list(const std::vector<int> list, const std::vector<int> item)
 //checks if a sub-list matches a section in the larger list
 {
@@ -235,6 +297,25 @@ void print_board()
   }
 }
 
+void uncover(const int x, const int y, const int z, const bool is_flagging)
+{
+  const int tile_idx = z * width * height * 5 + y * height * 5 + x * 5;
+
+  if (tile_list[tile_idx + 3] >= -1) //if the tile's not a bomb
+  {
+    tile_list[tile_idx + 4] = 1;
+    //print_single_pixel(const int x, const int y, const int z, tile_list[tile_idx + 3]);
+    if (tile_list[tile_idx + 3] == 0) //if it has 0 bombs nearby, used to start clearing 0s automatically
+    {
+
+    }
+    else
+    {
+
+    }
+  }
+}
+
 int main()
 {
   srand(time(0));
@@ -242,6 +323,21 @@ int main()
   tile_list = fill_board();
 
   print_board();
+
+  int rounds = 0;
+
+  while (won() == false || rounds < 3)
+  {
+    std::string input;
+    int int_input;
+    std::string question = "TEST: ";
+    std::vector<int> acceptable_answers = {0, 1, 2, 3, 4};
+    std::cout << question;
+    std::cin >> input;
+
+    int_input = format_input(question, input, acceptable_answers, true);
+    rounds++;
+  }
 
   return 0;
 }
