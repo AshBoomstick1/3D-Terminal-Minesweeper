@@ -35,4 +35,7 @@ int format_input(const std::string question, std::string input, const std::vecto
 char format_input(const std::string question, std::string input, const std::vector<char> acceptable_inputs, const bool first_test);
 bool won();
 
+void print_board();
+void print_single_pixel(const int x, const int y, const int z, std::string sprite);
+
 #endif
