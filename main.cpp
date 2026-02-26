@@ -12,7 +12,7 @@ std::vector<int> tile_list = {}; //list of all the tiles
 int format_input(const std::string question, std::string input, const std::vector<int> acceptable_inputs, const bool first_test)
 //takes the players input an ensures it is acceptable for the program
 {
-  if (input == "exit")
+  if (input == "exit" || input == "e")
   {
     abort();
   }
@@ -21,9 +21,9 @@ int format_input(const std::string question, std::string input, const std::vecto
   {
     std::cout << question;
     std::cin >> input;
-    std::cout << "x1B[2A";
+    std::cout << "\x1B[1A";
   }
-  std::cout << "x1B[1A";
+  std::cout << "\x1B[1A";
 
   try 
   {
@@ -97,16 +97,14 @@ bool search_list(const std::vector<int> list, const std::vector<int> item)
   return false;
 }
 
-int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> tile_coords, const int tile_idx)
-//counts the number of bombs surroudning a selected tile
+std::vector<int> nearby_tile_idxes(const std::vector<int> tile_list, const std::vector<int> tile_coords, const int tile_idx)
 {
+  std::vector<int> idx_list = {};
+
   //the coords of the tile selected
   int tile_x = tile_coords[0];
   int tile_y = tile_coords[1];
   int tile_z = tile_coords[2];
-
-  //counter of the bombs detected
-  int bomb_count = 0;
   
   //where to start the search, cuts off out-of-bounds tiles (lower x, y, or z than possible)
   int x_start_benchmark = -1;
@@ -141,8 +139,7 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
       {
         if (x_start != 0 || y_start != 0 || z_start != 0) //prevents the check from checking its own tile, not neccisary
         {
-          //idx is the idx of what the tile is (either bomb which is -1 or the number of bombs nearby (the number that is dicolonistsplayed when uncovered))
-          int idx = tile_idx + 3;
+          int idx = tile_idx;
 
           //moves the index to the info of the tile being searched right now
           idx += z_start * width * height * 5; //z (depth) translation
@@ -150,12 +147,27 @@ int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> t
           idx += x_start * 5; //x translation
 
           //if the tile is a bomb add it to the bomb counter
-          if (tile_list[idx] == -1)
-          {
-            bomb_count++;
-          }
+          idx_list.push_back(idx);
         }
       }
+    }
+  }
+
+  return idx_list;
+}
+
+int surrounding_bombs(const std::vector<int> tile_list, const std::vector<int> tile_coords, const int tile_idx)
+//counts the number of bombs surroudning a selected tile
+{
+  //counter of the bombs detected
+  int bomb_count = 0;
+  std::vector<int> tile_idxes = nearby_tile_idxes(tile_list, tile_coords, tile_idx);
+
+  for (int i = 0; i < tile_idxes.size(); i++)
+  {
+    if (tile_list[tile_idxes[i] + 3] == -1)
+    {
+      bomb_count++;
     }
   }
 
@@ -288,12 +300,46 @@ void print_board()
         }
         else
         {
-          std::cout << tile_list[idx] << " ";
+          //std::cout << tile_list[idx] << " ";
+          std::cout << "  ";
         }
       }
       std::cout << "\n";
     }
     std::cout << "\n\n";
+  }
+  std::cout << "\n";
+}
+
+void print_single_pixel(const int x, const int y, const int z, std::string sprite)
+{
+
+  const int tab_spaces = 8;
+  int x_bottom_offset = (tab_spaces / 2) + x;
+  int y_bottom_offset = (height - y) + ((depth - z)) * 2 + (depth - z - 1) * (height + 2);
+
+  std::cout << "\x1B[0G";
+
+  for (int i = 0; i < y_bottom_offset + 1; i++)
+  {
+    std::cout << "\x1B[1A"; //moves the cursor to the top of the frame
+  }
+
+  for (int i = 0; i < x_bottom_offset + 1; i++)
+  {
+    std::cout << "\x1B[2C"; //moves the cursor to the top of the frame
+  }
+
+  std::cout << sprite << " ";
+
+  for (int i = 0; i < y_bottom_offset + 1; i++)
+  {
+    std::cout << "\x1B[1B"; //moves the cursor to the top of the frame
+  }
+
+  for (int i = 0; i < x_bottom_offset + 2; i++)
+  {
+    std::cout << "\x1B[2D"; //moves the cursor to the top of the frame
   }
 }
 
@@ -301,18 +347,30 @@ void uncover(const int x, const int y, const int z, const bool is_flagging)
 {
   const int tile_idx = z * width * height * 5 + y * height * 5 + x * 5;
 
-  if (tile_list[tile_idx + 3] >= -1) //if the tile's not a bomb
+  if (tile_list[tile_idx + 3] > -1) //if the tile's not a bomb
   {
     tile_list[tile_idx + 4] = 1;
-    //print_single_pixel(const int x, const int y, const int z, tile_list[tile_idx + 3]);
     if (tile_list[tile_idx + 3] == 0) //if it has 0 bombs nearby, used to start clearing 0s automatically
     {
-
+      print_single_pixel(x, y, z, std::string("OO"));
+      std::vector<int> tile_coords = {tile_list[tile_idx], tile_list[tile_idx + 1], tile_list[tile_idx + 2]};
+      std::vector<int> idx_list = nearby_tile_idxes(tile_list, tile_coords, tile_idx);
+      for (int i = 0; i < idx_list.size(); i++)
+      {
+        if (tile_list[idx_list[i] + 3] == 0)
+        {
+          uncover(tile_list[idx_list[i]], tile_list[idx_list[i] + 1], tile_list[idx_list[i] + 2], false);
+        }
+      }
     }
     else
     {
-
+      print_single_pixel(x, y, z, std::to_string(tile_list[tile_idx + 3]));
     }
+  }
+  else
+  {
+    std::cout << "\n\nYOU LOSE";
   }
 }
 
@@ -328,14 +386,39 @@ int main()
 
   while (won() == false || rounds < 3)
   {
+    int x;
+    int y;
+    int z;
+
+    std::string question;
+    std::vector<int> acceptable_answers;
     std::string input;
     int int_input;
-    std::string question = "TEST: ";
-    std::vector<int> acceptable_answers = {0, 1, 2, 3, 4};
+
+    
+    question = "Enter the layer: ";
+    acceptable_answers = {1, 2, 3};
     std::cout << question;
     std::cin >> input;
-
     int_input = format_input(question, input, acceptable_answers, true);
+    z = int_input - 1;
+
+    question = "Enter the X: ";
+    acceptable_answers = {1, 2, 3};
+    std::cout << question;
+    std::cin >> input;
+    int_input = format_input(question, input, acceptable_answers, true);
+    x = int_input - 1;
+
+    question = "Enter the Y: ";
+    acceptable_answers = {1, 2, 3};
+    std::cout << question;
+    std::cin >> input;
+    int_input = format_input(question, input, acceptable_answers, true);
+    y = int_input - 1;
+
+    uncover(x, y, z, false);
+
     rounds++;
   }
 
