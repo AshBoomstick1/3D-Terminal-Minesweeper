@@ -89,4 +89,6 @@ void print_single_pixel(const int x, const int y, const int z, std::string sprit
   {
     std::cout << "\x1B[2D"; //moves the cursor to the top of the frame
   }
+
+  std::cout << "\x1B[0G";
 }

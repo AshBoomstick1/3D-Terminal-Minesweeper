@@ -47,7 +47,26 @@ int format_input(const std::string question, std::string input, const std::vecto
 
 char format_input(const std::string question, std::string input, const std::vector<char> acceptable_inputs, const bool first_test)
 {
+  if (input == "exit" || input == "e")
+  {
+    abort();
+  }
 
+  if (first_test == false)
+  {
+    std::cout << question;
+    std::cin >> input;
+    std::cout << "\x1B[1A";
+  }
+  std::cout << "\x1B[1A";
+
+  if (input[0] != 'y' && input[0] != 'n' && input[0] != 'f')
+  {
+    std::cout << "Input is not 'y', 'n', or 'f'.\n";
+    format_input(question, input, acceptable_inputs, false);
+  }
+
+  return input[0];
 }
 
 bool won()
@@ -231,7 +250,7 @@ std::vector<int> fill_board()
           return_tiles.push_back(0); //if not a bomb
         }
         
-        return_tiles.push_back(0); //ifn uncovered or covered. 0 for covered, 1 for uncovered, 2 for flagged
+        return_tiles.push_back(0); //if uncovered or covered. 0 for covered, 1 for uncovered, 2 for flagged
       }
     }
   }
