@@ -1,0 +1,59 @@
+INSTRUCTIONS:
+  First, you have to define what the size of your 
+  board will be and the percentage of tiles that 
+  will be bombs. It's reccommended to have an 
+  equal width (x-axis), height (y-axis), and 
+  depth (z/vertical-axis).
+
+  Personally, I like a size 3 board with 20% bombs.
+
+  After the setup is complete, the board will be 
+  printed out looking similar to this depending 
+  on your size. This board will be size 3.
+
+
+  3D MINESWEEPER
+
+        Layer: 1
+          1 2 3 X
+        1       
+        2       
+        3       
+        Y
+
+        Layer: 2
+          1 2 3 X
+        1       
+        2       
+        3       
+        Y
+
+        Layer: 3
+          1 2 3 X
+        1       
+        2       
+        3       
+        Y
+
+  Enter the layer: 
+
+
+  You can see at the bottom, its asking for the 
+  layer. This will be the depth (z-axis) of the 
+  tile you will uncover.
+
+  It will then ask for the X coordinate 
+  (width-wise) of the tile.
+
+  Then, it will ask the Y coordinate (the height 
+  of each layer).
+
+  Finally, it will ask if you want to put a flag
+  on this tile or not. If you do want to place a
+  flag you can enter: y, f, or 1. If you don't
+  want to place a flag you can enter: n, or 2.
+
+  To win, uncover every non-bomb tile.
+
+  Have fun!
+  -Ash

@@ -97,12 +97,13 @@ void print_single_pixel(const int x, const int y, const int z, std::string sprit
 
 void print_instructions()
 {
-  std::ifstream instructions ("instructions.txt", std::ios::in);
+  std::ifstream instructions("instructions.txt");
   std::string line;
+
+  std::cout << "\x1B[2K";
 
   if (instructions.is_open())
   {
-    std::cout << "OPENED FILE SUCCESSFULY";
     while(std::getline(instructions, line))
     {
       std::cout << line << "\n";
