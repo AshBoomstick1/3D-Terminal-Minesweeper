@@ -1,11 +1,11 @@
 #include "3dMS.hpp"
 
-const float bomb_percent = 0.5; //percentage of total tiles that are bombs
+const float bomb_percent = 0.2; //percentage of total tiles that are bombs
 
 //dimensions of the board
-const int width =  2;
-const int height = 2;
-const int depth =  2;
+const int width =  3;
+const int height = 3;
+const int depth =  3;
 
 std::vector<int> tile_list = {}; //list of all the tiles
 
@@ -320,6 +320,18 @@ int main()
 {
   srand(time(0));
 
+  std::string input;
+  char char_input;
+  std::string question = "\x1B[2KDo you want to read the instructions? (y/n): ";
+  std::cout << question;
+  std::cin >> input;
+  char_input = format_input_char(question, input, true);
+
+  if (char_input == 'f' || char_input == 'y' || char_input == '1')
+  {
+    print_instructions();
+  }
+
   tile_list = fill_board();
 
   print_board();
@@ -330,10 +342,7 @@ int main()
     int y;
     int z;
 
-    std::string question;
-    std::string input;
     int int_input;
-    char char_input;
 
     
     question = "\x1B[2KEnter the layer: ";

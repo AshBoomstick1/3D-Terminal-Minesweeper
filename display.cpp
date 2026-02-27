@@ -19,13 +19,14 @@ void print_board()
     {
       if (i < 9)
       {
-        std::cout << border_color << i + 1 << " " << end_color;
+        std::cout << border_color << i + 1 << " ";
       }
       else
       {
-        std::cout << border_color << i + 1 << end_color;
+        std::cout << border_color << i + 1;
       }
     }
+    std::cout << " X" << end_color;
 
     std::cout << "\n";
     for (int y = 0; y < height; y++)
@@ -39,13 +40,14 @@ void print_board()
       {
         std::cout << border_color << y + 1 << end_color;
       }
+      
 
       for (int x = 0; x < width; x++)
       {
         int idx = z * width * height * 5 + y * height * 5 + x * 5 + 3;
         if (tile_list[idx] == -1)
         {
-          std::cout << "XX";
+          std::cout << "  ";
         }
         else
         {
@@ -55,7 +57,7 @@ void print_board()
       }
       std::cout << "\n";
     }
-    std::cout << "\n\n";
+    std::cout << border_color << "\tY " << end_color << "\n\n";
   }
   std::cout << "\n";
 }
@@ -91,4 +93,25 @@ void print_single_pixel(const int x, const int y, const int z, std::string sprit
   }
 
   std::cout << "\x1B[0G";
+}
+
+void print_instructions()
+{
+  std::ifstream instructions ("instructions.txt", std::ios::in);
+  std::string line;
+
+  if (instructions.is_open())
+  {
+    std::cout << "OPENED FILE SUCCESSFULY";
+    while(std::getline(instructions, line))
+    {
+      std::cout << line << "\n";
+    }
+  }
+
+  instructions.close();
+
+  std::cout << "\n\n When your done reading, enter a charactar: ";
+  std::cin >> line;
+  std::cout << "\x1B[2J\x1B[0;0H";
 }

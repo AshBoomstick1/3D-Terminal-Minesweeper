@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
 
 //variable declarations
 extern const int width;
@@ -37,5 +38,6 @@ bool won();
 
 void print_board();
 void print_single_pixel(const int x, const int y, const int z, std::string sprite);
+void print_instructions();
 
 #endif
