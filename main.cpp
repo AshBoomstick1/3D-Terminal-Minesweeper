@@ -9,7 +9,7 @@ const int depth =  3;
 
 std::vector<int> tile_list = {}; //list of all the tiles
 
-int format_input(const std::string question, std::string input, const std::vector<int> acceptable_inputs, const bool first_test)
+int format_input(const std::string question, std::string input, const bool first_test)
 //takes the players input an ensures it is acceptable for the program
 {
   if (input == "exit" || input == "e")
@@ -32,20 +32,20 @@ int format_input(const std::string question, std::string input, const std::vecto
   catch (std::invalid_argument &e)
   {
     std::cout << "Input contained a non-integer charactar.\n";
-    format_input(question, input, acceptable_inputs, false);
+    format_input(question, input, false);
   }
 
   const int int_input = stoi(input);
   if (int_input < 1 || int_input > width)
   {
     std::cout << "Input falls outside the accepted range of integers.\n";
-    format_input(question, input, acceptable_inputs, false);
+    format_input(question, input, false);
   }
 
   return int_input;
 }
 
-char format_input(const std::string question, std::string input, const std::vector<char> acceptable_inputs, const bool first_test)
+char format_input_char(const std::string question, std::string input, const bool first_test)
 {
   if (input == "exit" || input == "e")
   {
@@ -60,10 +60,10 @@ char format_input(const std::string question, std::string input, const std::vect
   }
   std::cout << "\x1B[1A";
 
-  if (input[0] != 'y' && input[0] != 'n' && input[0] != 'f')
+  if (input[0] != 'y' && input[0] != 'n' && input[0] != 'f' && input[0] != '0' && input[0] != '1' && input[0] != '2')
   {
     std::cout << "Input is not 'y', 'n', or 'f'.\n";
-    format_input(question, input, acceptable_inputs, false);
+    format_input_char(question, input, false);
   }
 
   return input[0];
@@ -273,30 +273,46 @@ void uncover(const int x, const int y, const int z, const bool is_flagging)
 {
   const int tile_idx = z * width * height * 5 + y * height * 5 + x * 5;
 
-  if (tile_list[tile_idx + 3] > -1) //if the tile's not a bomb
+  if (is_flagging)
   {
-    tile_list[tile_idx + 4] = 1;
-    if (tile_list[tile_idx + 3] == 0) //if it has 0 bombs nearby, used to start clearing 0s automatically
+    if (tile_list[tile_idx + 4] == 0)
     {
-      print_single_pixel(x, y, z, std::string("OO"));
-      std::vector<int> tile_coords = {tile_list[tile_idx], tile_list[tile_idx + 1], tile_list[tile_idx + 2]};
-      std::vector<int> idx_list = nearby_tile_idxes(tile_list, tile_coords, tile_idx);
-      for (int i = 0; i < idx_list.size(); i++)
-      {
-        if (tile_list[idx_list[i] + 3] == 0)
-        {
-          uncover(tile_list[idx_list[i]], tile_list[idx_list[i] + 1], tile_list[idx_list[i] + 2], false);
-        }
-      }
+      print_single_pixel(x, y, z, std::string("FF"));
+      tile_list[tile_idx + 4] = 2;
     }
     else
     {
-      print_single_pixel(x, y, z, std::to_string(tile_list[tile_idx + 3]));
+      print_single_pixel(x, y, z, std::string("  "));
+      tile_list[tile_idx + 4] = 0;
     }
   }
   else
   {
-    std::cout << "\n\nYOU LOSE";
+    if (tile_list[tile_idx + 3] > -1) //if the tile's not a bomb
+    {
+      tile_list[tile_idx + 4] = 1;
+      if (tile_list[tile_idx + 3] == 0) //if it has 0 bombs nearby, used to start clearing 0s automatically
+      {
+        print_single_pixel(x, y, z, std::string("OO"));
+        std::vector<int> tile_coords = {tile_list[tile_idx], tile_list[tile_idx + 1], tile_list[tile_idx + 2]};
+        std::vector<int> idx_list = nearby_tile_idxes(tile_list, tile_coords, tile_idx);
+        for (int i = 0; i < idx_list.size(); i++)
+        {
+          if (tile_list[idx_list[i] + 3] == 0)
+          {
+            uncover(tile_list[idx_list[i]], tile_list[idx_list[i] + 1], tile_list[idx_list[i] + 2], false);
+          }
+        }
+      }
+      else
+      {
+        print_single_pixel(x, y, z, std::to_string(tile_list[tile_idx + 3]));
+      }
+    }
+    else
+    {
+      std::cout << "\n\nYOU LOSE";
+    }
   }
 }
 
@@ -308,44 +324,52 @@ int main()
 
   print_board();
 
-  int rounds = 0;
-
-  while (won() == false || rounds < 3)
+  while (won() == false)
   {
     int x;
     int y;
     int z;
 
     std::string question;
-    std::vector<int> acceptable_answers;
     std::string input;
     int int_input;
+    char char_input;
 
     
-    question = "Enter the layer: ";
-    acceptable_answers = {1, 2, 3};
+    question = "\x1B[2KEnter the layer: ";
     std::cout << question;
     std::cin >> input;
-    int_input = format_input(question, input, acceptable_answers, true);
+    int_input = format_input(question, input, true);
     z = int_input - 1;
 
-    question = "Enter the X: ";
-    acceptable_answers = {1, 2, 3};
+    question = "\x1B[2KEnter the X: ";
     std::cout << question;
     std::cin >> input;
-    int_input = format_input(question, input, acceptable_answers, true);
+    int_input = format_input(question, input, true);
     x = int_input - 1;
 
-    question = "Enter the Y: ";
-    acceptable_answers = {1, 2, 3};
+    question = "\x1B[2KEnter the Y: ";
     std::cout << question;
     std::cin >> input;
-    int_input = format_input(question, input, acceptable_answers, true);
+    int_input = format_input(question, input, true);
     y = int_input - 1;
 
-    uncover(x, y, z, false);
-
-    rounds++;
+    question = "\x1B[2KDo you want to flag this tile?: ";
+    std::cout << question;
+    std::cin >> input;
+    char_input = format_input_char(question, input, true);
+    
+    if (tile_list[z * width * height * 5 + y * height * 5 + x * 5 + 4] != 1)
+    {
+      if (char_input == 'f' || char_input == 'y' || char_input == '1')
+      {
+        uncover(x, y, z, true);
+      }
+      else
+      {
+        uncover(x, y, z, false);
+      }
+    }
   }
 
   return 0;
