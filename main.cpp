@@ -1,11 +1,11 @@
 #include "3dMS.hpp"
 
-const float bomb_percent = 0.2; //percentage of total tiles that are bombs
+const float bomb_percent = 0.5; //percentage of total tiles that are bombs
 
 //dimensions of the board
-const int width =  3;
-const int height = 3;
-const int depth =  3;
+const int width =  2;
+const int height = 2;
+const int depth =  2;
 
 std::vector<int> tile_list = {}; //list of all the tiles
 
@@ -74,7 +74,7 @@ bool won()
 {
   for (int i = 4; i < tile_list.size(); i += 5)
   {
-    if (tile_list[i] == 0)
+    if (tile_list[i] == 0 && tile_list[i - 1] != -1)
     {
       return false;
     }
@@ -371,6 +371,8 @@ int main()
       }
     }
   }
+
+  std::cout << "\n\nYOU WON!\n";
 
   return 0;
 }
