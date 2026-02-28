@@ -1,4 +1,7 @@
 INSTRUCTIONS:
+  *You can exit the game at any point by typing e
+  or exit.
+  
   First, you have to define what the size of your 
   board will be and the percentage of tiles that 
   will be bombs. It's reccommended to have an 
@@ -52,6 +55,10 @@ INSTRUCTIONS:
   on this tile or not. If you do want to place a
   flag you can enter: y, f, or 1. If you don't
   want to place a flag you can enter: n, or 2.
+
+  To take off a flag you select a tile that
+  already has a flag on it and enter that you
+  would like to flag the tile.
 
   To win, uncover every non-bomb tile.
 

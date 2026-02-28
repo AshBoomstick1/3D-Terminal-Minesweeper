@@ -44,16 +44,7 @@ void print_board()
 
       for (int x = 0; x < width; x++)
       {
-        int idx = z * width * height * 5 + y * height * 5 + x * 5 + 3;
-        if (tile_list[idx] == -1)
-        {
-          std::cout << "  ";
-        }
-        else
-        {
-          //std::cout << tile_list[idx] << " ";
-          std::cout << "  ";
-        }
+        std::cout << covered_color << end_color;
       }
       std::cout << "\n";
     }

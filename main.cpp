@@ -298,10 +298,7 @@ void uncover(const int x, const int y, const int z, const bool is_flagging)
         std::vector<int> idx_list = nearby_tile_idxes(tile_list, tile_coords, tile_idx);
         for (int i = 0; i < idx_list.size(); i++)
         {
-          if (tile_list[idx_list[i] + 3] == 0)
-          {
-            uncover(tile_list[idx_list[i]], tile_list[idx_list[i] + 1], tile_list[idx_list[i] + 2], false);
-          }
+          uncover(tile_list[idx_list[i]], tile_list[idx_list[i] + 1], tile_list[idx_list[i] + 2], false);
         }
       }
       else
